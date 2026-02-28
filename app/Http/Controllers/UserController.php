@@ -5,12 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\UserModel;
 use Illuminate\Support\Facades\Hash;
+use Yajra\DataTables\Facades\DataTables;
 
 class UserController extends Controller
 {
     public function index()
     {
-
         $breadcrumb = (object) [
             'title' => 'Daftar User',
             'list' => ['Home', 'User']
@@ -20,18 +20,35 @@ class UserController extends Controller
             'title' => 'Daftar user yang terdaftar dalam sistem'
         ];
 
-        $activeMenu = 'user'; // set menu yang sedang aktif
+        $activeMenu = 'user';
 
-        return view('user.index', ['breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu]);
+        return view('index', ['breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu]);
     }
 
+    public function list(Request $request)
+    {
+        $users = UserModel::select('user_id', 'username', 'nama', 'level_id');
+
+        return DataTables::of($users)
+            ->addIndexColumn()
+            ->addColumn('aksi', function ($user) {
+                $btn = '<a href="' . url('/user/' . $user->user_id) . '" class="btn btn-info btn-sm">Detail</a> ';
+                $btn .= '<a href="' . url('/user/' . $user->user_id . '/edit') . '" class="btn btn-warning btn-sm">Edit</a> ';
+                $btn .= '<form class="d-inline-block" method="POST" action="' . url('/user/' . $user->user_id) . '">' .
+                    csrf_field() . method_field('DELETE') .
+                    '<button type="submit" class="btn btn-danger btn-sm" onclick="return confirm(\'Apakah Anda yakin menghapus data ini?\');">Hapus</button></form>';
+                return $btn;
+            })
+            ->rawColumns(['aksi'])
+            ->make(true);
+    }
 
     public function tambah()
     {
         return view('user_tambah');
     }
 
-    public function tambah_simpan(Request $request)
+    public function store(Request $request)
     {
         UserModel::create([
             'username' => $request->username,
@@ -43,14 +60,19 @@ class UserController extends Controller
         return redirect('/user');
     }
 
-    public function ubah($id)
+    public function show($id)
     {
-
         $user = UserModel::find($id);
-        return view('user_ubah', ['data' => $user]);
+        return view('user.show', ['data' => $user]);
     }
 
-    public function ubah_simpan($id, Request $request)
+    public function edit($id)
+    {
+        $user = UserModel::find($id);
+        return view('user.edit', ['data' => $user]);
+    }
+
+    public function update($id, Request $request)
     {
         $user = UserModel::find($id);
         $user->username = $request->username;
@@ -58,13 +80,15 @@ class UserController extends Controller
         $user->password = Hash::make($request->password);
         $user->level_id = $request->level_id;
         $user->save();
+
         return redirect('/user');
     }
 
-    public function hapus($id)
+    public function destroy($id)
     {
         $user = UserModel::find($id);
         $user->delete();
+
         return redirect('/user');
     }
 }

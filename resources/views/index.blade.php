@@ -1,4 +1,4 @@
-@extends('layouts.template')
+@extends('adminlte::page')
 @section('content')
     <div class="card card-outline card-primary">
         <div class="card-header">
@@ -44,14 +44,14 @@
                         searchable: false
                     }, {
                         data: "username",
-                        className: "",
+                        className: "username",
                         // orderable: true, jika ingin kolom ini bisa diurutkan
                         orderable: true,
                         // searchable: true, jika ingin kolom ini bisa dicari
                         searchable: true
                     }, {
                         data: "nama",
-                        className: "",
+                        className: "nama",
                         orderable: true,
                         searchable: true
                     }, {
