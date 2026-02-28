@@ -27,8 +27,9 @@ class UserController extends Controller
 
     public function list(Request $request)
     {
-        $users = UserModel::select('user_id', 'username', 'nama', 'level_id');
-
+        $users = UserModel::query()
+            ->with('level')
+            ->select('user_id', 'username', 'nama', 'level_id');
         return DataTables::of($users)
             ->addIndexColumn()
             ->addColumn('aksi', function ($user) {

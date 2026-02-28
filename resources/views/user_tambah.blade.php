@@ -2,7 +2,7 @@
 
 <body>
     <h1>Form Tambah Data User</h1>
-    <form method="post" action="/user/tambah_simpan">
+    <form method="post" action="{{ url('/user') }}">
 
         {{ csrf_field() }}
 

@@ -32,9 +32,8 @@
                 // serverSide: true, jika ingin menggunakan server side processing
                 serverSide: true,
                 ajax: {
-                    "url": "{{ url('user/list') }}",
-                    "dataType": "json",
-                    "type": "POST"
+                    url: "{{ route('user.list') }}",
+                    dataType: "json"
                 },
                 columns: [
                     {// nomor urut dari laravel datatable addIndexColumn()

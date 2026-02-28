@@ -21,7 +21,7 @@ Route::get('/kategori', [KategoriController::class, 'index']);
 
 Route::group(['prefix' => 'user'], function () {
     Route::get('/', [UserController::class, 'index']);
-    Route::get('/list', [UserController::class, 'list']);
+    Route::get('/list', [UserController::class, 'list'])->name('user.list');
     Route::get('/create', [UserController::class, 'tambah']);
     Route::post('/', [UserController::class, 'store']);
     Route::get('/{id}', [UserController::class, 'show']);
